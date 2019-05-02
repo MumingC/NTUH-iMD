@@ -1,0 +1,16 @@
+#combining the new and old lab data
+newlab<- read.delim("data/19_newlab.txt")
+oldlab<- read.delim("data/18_oldlab.txt")
+
+lab1 <- newlab %>% 
+    select(PERSONID2, HISEXAMITEMNAME, CONFIRMRESULT, SAMPLINGDATETIME)
+lab2 <- oldlab %>%
+    select(PERSONID2, ITEMNAME, VALUE1, LOGDATE)
+# newlab$samplingdatetime is "factor", oldlab$logdate is "integer
+# change them into date? change to string first
+#trim everything after a space
+lab1$SAMPLINGDATETIME <- sub(" .*", "", as.character(lab1$SAMPLINGDATETIME)) %>%as.Date()
+lab2$LOGDATE <- as.character(lab2$LOGDATE+19110000) %>%
+    as.Date(format="%Y%m%d")
+names(lab2) <- names(lab1) #unifying the column names
+combinedLab <- rbind(lab1, lab2)
